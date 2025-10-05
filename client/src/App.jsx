@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import PollList from "./Pages/PollList";
+import PollDetail from "./Pages/PollDetail";
+import CreatePoll from "./Pages/CreatePoll";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <nav className="bg-white shadow-lg border-b border-gray-200">
+          <div className="container mx-auto px-6 py-4">
+            <div className="flex items-center gap-6">
+              <h1 className="text-2xl font-bold text-indigo-600">Poll App</h1>
+              <div className="flex gap-4 text-sm">
+                <Link
+                  to="/"
+                  className="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors font-medium"
+                >
+                  📊 All Polls
+                </Link>
+                <Link
+                  to="/create"
+                  className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg transition-colors font-medium shadow-md"
+                >
+                  ➕ Create Poll
+                </Link>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div className="container mx-auto px-6 py-8">
+          <Routes>
+            <Route path="/" element={<PollList />} />
+            <Route path="/poll/:id" element={<PollDetail />} />
+            <Route path="/create" element={<CreatePoll />} />
+          </Routes>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;

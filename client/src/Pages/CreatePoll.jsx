@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const CreatePoll = () => {
+function CreatePoll() {
   const [title, setTitle] = useState("");
-  const [username, setUsername] = useState("");
   const [options, setOptions] = useState(["", ""]);
+  const navigate = useNavigate();
 
   const handleOptionChange = (index, value) => {
     const newOptions = [...options];
@@ -12,97 +13,105 @@ const CreatePoll = () => {
   };
 
   const addOption = () => setOptions([...options, ""]);
-  const removeOption = (index) =>
-    setOptions(options.filter((_, i) => i !== index));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title || !username || options.some((o) => !o.trim())) {
-      alert("Please fill all fields!");
-      return;
+  const removeOption = (index) => {
+    if (options.length > 2) {
+      setOptions(options.filter((_, i) => i !== index));
     }
+  };
 
-    const pollData = { title, username, options };
-
-    const res = await fetch("http://localhost:5000/api/polls", {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:5000/api/polls", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pollData),
-    });
-
-    const data = await res.json();
-    alert("Poll created successfully!");
-    console.log(data);
-    setTitle("");
-    setUsername("");
-    setOptions(["", ""]);
+      body: JSON.stringify({ title, username: "Or", options }),
+    })
+      .then((res) => res.json())
+      .then((data) => navigate(`/poll/${data.id}`))
+      .catch((err) => console.error(err));
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-lg"
-      >
-        <h2 className="text-2xl font-bold text-center mb-6 text-blue-700">
-          Create a New Poll
-        </h2>
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Create New Poll
+        </h1>
+        <p className="text-gray-500 mb-8">
+          Create a poll and share it with others
+        </p>
 
-        <input
-          type="text"
-          placeholder="Poll Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <h3 className="font-semibold mb-2">Options:</h3>
-        {options.map((opt, index) => (
-          <div key={index} className="flex mb-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Poll Title
+            </label>
             <input
               type="text"
-              placeholder={`Option ${index + 1}`}
-              value={opt}
-              onChange={(e) => handleOptionChange(index, e.target.value)}
-              className="flex-grow p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="e.g., What's your favorite programming language?"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
             />
-            {options.length > 2 && (
-              <button
-                type="button"
-                onClick={() => removeOption(index)}
-                className="ml-2 text-red-600 hover:text-red-800"
-              >
-                ✕
-              </button>
-            )}
           </div>
-        ))}
 
-        <button
-          type="button"
-          onClick={addOption}
-          className="text-blue-600 hover:underline mb-4"
-        >
-          + Add Option
-        </button>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Options
+            </label>
+            <div className="space-y-3">
+              {options.map((opt, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={opt}
+                    onChange={(e) => handleOptionChange(idx, e.target.value)}
+                    required
+                    placeholder={`Option ${idx + 1}`}
+                    className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all"
+                  />
+                  {options.length > 2 && (
+                    <button
+                      type="button"
+                      onClick={() => removeOption(idx)}
+                      className="px-4 py-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors font-medium"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={addOption}
+              className="mt-3 w-full px-4 py-3 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all font-medium"
+            >
+              ➕ Add Another Option
+            </button>
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-        >
-          Create Poll
-        </button>
-      </form>
+          <div className="flex gap-3 pt-4">
+            <button
+              type="submit"
+              className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-md hover:shadow-lg"
+            >
+              Create Poll
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
-};
+}
 
 export default CreatePoll;
