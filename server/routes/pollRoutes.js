@@ -100,6 +100,7 @@ router.post("/:id/options", async (req, res) => {
 router.post("/:id/vote", async (req, res) => {
   try {
     const { username, optionId } = req.body;
+    console.log("🗳️ Vote received:", req.body); //check
     const pollId = req.params.id;
     if (!username || !optionId)
       return res.status(400).json({ error: "Missing username or optionId" });
@@ -129,15 +130,13 @@ router.post("/:id/vote", async (req, res) => {
     await option.save();
 
     const updatedPoll = await Poll.findByPk(req.params.id, {
-      include: [
-        {
-          model: Option,
-          as: "options",
-          include: [{ model: Vote, as: "optionVotes" }],
-        },
-        { model: Vote, as: "votes" },
-      ],
+      include: [{ model: Option, as: "options" }],
     });
+
+    // 🧾 הצג בלוג איך זה נראה:
+    console.log("✅ Updated Poll:", updatedPoll.toJSON());
+
+    // החזר ל־frontend
     res.json(updatedPoll);
   } catch (err) {
     console.error(err);

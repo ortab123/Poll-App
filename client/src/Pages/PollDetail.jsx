@@ -6,6 +6,7 @@ function PollDetail() {
   const [poll, setPoll] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
+  const username = "Or";
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/polls/${id}`)
@@ -14,19 +15,46 @@ function PollDetail() {
       .catch((err) => console.error(err));
   }, [id]);
 
-  const handleVote = () => {
-    if (!selectedOption) return;
-    fetch(`http://localhost:5000/api/polls/${id}/vote`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ optionId: selectedOption, username: "Or" }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPoll(data);
-        setHasVoted(true);
-      })
-      .catch((err) => console.error(err));
+  const handleVote = async () => {
+    if (!selectedOption) {
+      alert("Please select an option first!");
+      return;
+    }
+    console.log("Submitting vote:", { username, selectedOption }); //check
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/polls/${poll.id}/vote`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username || "Anonymous",
+            optionId: selectedOption,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const error = await res.json();
+        alert(error.error || "Vote failed!");
+        return;
+      }
+
+      const updatedPoll = await res.json();
+
+      if (!updatedPoll || !updatedPoll.options) {
+        console.error("❌ Invalid poll data:", updatedPoll);
+        alert("Error: missing poll options!");
+        return;
+      }
+
+      setPoll(updatedPoll);
+      alert("✅ Vote submitted successfully!");
+    } catch (err) {
+      console.error("❌ Vote error:", err);
+      alert(`Error submitting vote: ${err.message}`);
+    }
   };
 
   if (!poll) {
@@ -40,10 +68,8 @@ function PollDetail() {
     );
   }
 
-  const totalVotes = poll.options.reduce(
-    (sum, opt) => sum + (opt.votes || 0),
-    0
-  );
+  const totalVotes =
+    poll?.options?.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 0;
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -87,7 +113,7 @@ function PollDetail() {
             <p className="text-sm font-semibold text-gray-600 mb-4">
               Results ({totalVotes} {totalVotes === 1 ? "vote" : "votes"})
             </p>
-            {poll.options.map((option) => {
+            {poll?.options?.map((option) => {
               const votes = option.votes || 0;
               const percentage =
                 totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : 0;
