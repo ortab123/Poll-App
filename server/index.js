@@ -6,6 +6,7 @@ const sequelize = require("./db");
 const Poll = require("./models/Poll");
 const Option = require("./models/Options");
 const Vote = require("./models/Vote");
+const User = require("./models/User");
 
 // Associations
 Poll.hasMany(Option, { as: "options", onDelete: "CASCADE" });
@@ -17,6 +18,10 @@ Vote.belongsTo(Poll);
 Option.hasMany(Vote, { as: "optionVotes", onDelete: "CASCADE" });
 Vote.belongsTo(Option);
 
+User.hasMany(Vote, { as: "userVotes", onDelete: "CASCADE" });
+Vote.belongsTo(User);
+
+const authRoutes = require("./routes/authRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 
 const app = express();
@@ -31,12 +36,13 @@ app.get("/", (req, res) => {
   res.send("Poll-App Backend Running");
 });
 
-// Poll routes
+//routes
+app.use("/api/auth", authRoutes);
 app.use("/api/polls", pollRoutes);
 
 // סנכרון Database ויצירת טבלאות
 sequelize
-  .sync({ alter: true })
+  .sync({ force: true })
   .then(() => console.log("Database & tables created!"))
   .catch((err) => console.error("Error syncing database:", err));
 

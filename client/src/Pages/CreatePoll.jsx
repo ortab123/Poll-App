@@ -12,7 +12,13 @@ function CreatePoll() {
     setOptions(newOptions);
   };
 
-  const addOption = () => setOptions([...options, ""]);
+  const addOption = () => {
+    if (options.length >= 8) {
+      alert("A survey can contain a maximum of 8 options.");
+      return;
+    }
+    setOptions([...options, ""]);
+  };
 
   const removeOption = (index) => {
     if (options.length > 2) {
@@ -20,16 +26,34 @@ function CreatePoll() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/api/polls", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, username: "Or", options }),
-    })
-      .then((res) => res.json())
-      .then((data) => navigate(`/poll/${data.id}`))
-      .catch((err) => console.error(err));
+
+    if (options.length > 8) {
+      alert("A survey can contain a maximum of 8 options.");
+      return;
+    }
+
+    try {
+      const username = localStorage.getItem("email") || "Anonymous";
+      const res = await fetch("http://localhost:5000/api/polls", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, username, options }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error);
+        return;
+      }
+
+      navigate(`/poll/${data.id}`);
+    } catch (err) {
+      console.error(err);
+      alert("Error creating poll!");
+    }
   };
 
   return (
