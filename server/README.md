@@ -31,9 +31,8 @@ This is the **backend** of the Poll App — a Node.js + Express server that prov
 
 ## ⚙️ Installation
 
-### 1. Navigate to the server folder:
-
 ```bash
+1. Navigate to the server folder:
 cd server
 2. Install dependencies:
 bash
@@ -42,22 +41,23 @@ npm install
 3. Create a .env file:
 Add the following variables:
 
-bash
+
 Copy code
 PORT=5000
 MONGO_URI=mongodb+srv://<your_cluster>/<db_name>
 JWT_SECRET=your_jwt_secret
 4. Run the server:
-bash
+
 Copy code
 npm run dev
 Server runs by default at:
 
-arduino
-Copy code
 http://localhost:5000
-🧩 Folder Structure
-bash
+```
+
+### 🧩 Folder Structure
+
+```
 Copy code
 server/
 ├── src/
@@ -69,6 +69,7 @@ server/
 │   └── db.js                # SQL connection
 ├── package.json
 └── .env
+
 🔗 API Endpoints
 🔐 Auth Routes
 Method	Endpoint	Description
