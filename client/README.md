@@ -1,16 +1,80 @@
-# React + Vite
+# 🗳️ Poll App - Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the **client-side** of the Poll App — a full-stack voting platform that allows users to register, log in, create polls, and vote in real-time.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+- User registration and login with JWT authentication
+- Create, view, and vote on polls
+- View real-time vote counts
+- Change your vote (update an existing vote)
+- Responsive and clean UI with React + Vite
+- Protected routes (only logged-in users can vote)
+- Persistent authentication (localStorage token)
+- Logout button replaces login/register when authenticated
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🧰 Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React** (Vite)
+- **React Router DOM**
+- **Axios**
+- **Context API** for global state management
+- **TailwindCSS / Custom CSS**
+- **JWT** for authentication (via server)
+- **LocalStorage** for user session persistence
+
+---
+
+## ⚙️ Installation
+
+### 1. Navigate to the client folder:
+
+```bash
+cd client
+2. Install dependencies:
+bash
+Copy code
+npm install
+3. Create a .env file:
+Add your backend server URL (adjust port if needed):
+
+bash
+Copy code
+VITE_API_URL=http://localhost:5000
+4. Run the development server:
+bash
+Copy code
+npm run dev
+5. Access the app:
+Open your browser at:
+
+arduino
+Copy code
+http://localhost:5173
+🧩 Folder Structure
+csharp
+Copy code
+client/
+├── src/
+│   ├── pages/          # Login, Register, PollList, PollDetails
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── public/
+└── package.json
+
+🔐 Authentication Flow
+User registers or logs in → gets a JWT token from the server.
+
+Token is stored in localStorage.
+
+AuthContext reads token on app load and keeps the user logged in.
+
+Navbar updates dynamically based on isAuthenticated.
+
+On logout → token is removed → user is redirected to login.
+```

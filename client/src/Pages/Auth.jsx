@@ -49,7 +49,7 @@ function AuthPage() {
         navigate("/");
 
         // רענון הדף כדי שה-navbar יתעדכן
-        window.location.reload();
+        // window.location.reload();
       } else {
         alert("Registration successful! You can now log in.");
         navigate("/auth?mode=login");

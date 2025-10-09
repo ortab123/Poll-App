@@ -42,7 +42,7 @@ app.use("/api/polls", pollRoutes);
 
 // סנכרון Database ויצירת טבלאות
 sequelize
-  .sync({ force: true })
+  .sync({ alter: true })
   .then(() => console.log("Database & tables created!"))
   .catch((err) => console.error("Error syncing database:", err));
 

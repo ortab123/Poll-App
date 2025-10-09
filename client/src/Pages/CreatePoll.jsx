@@ -29,11 +29,6 @@ function CreatePoll() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (options.length > 8) {
-      alert("A survey can contain a maximum of 8 options.");
-      return;
-    }
-
     try {
       const username = localStorage.getItem("email") || "Anonymous";
       const res = await fetch("http://localhost:5000/api/polls", {
