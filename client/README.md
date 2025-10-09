@@ -31,33 +31,28 @@ This is the **client-side** of the Poll App — a full-stack voting platform tha
 
 ## ⚙️ Installation
 
-### 1. Navigate to the client folder:
-
 ```bash
+1. Navigate to the client folder:
 cd client
+
 2. Install dependencies:
-bash
-Copy code
 npm install
+
 3. Create a .env file:
 Add your backend server URL (adjust port if needed):
-
-bash
-Copy code
 VITE_API_URL=http://localhost:5000
+
 4. Run the development server:
-bash
-Copy code
 npm run dev
+
 5. Access the app:
 Open your browser at:
-
-arduino
-Copy code
 http://localhost:5173
-🧩 Folder Structure
-csharp
-Copy code
+```
+
+### 🧩 Folder Structure
+
+```
 client/
 ├── src/
 │   ├── pages/          # Login, Register, PollList, PollDetails
@@ -68,13 +63,9 @@ client/
 └── package.json
 
 🔐 Authentication Flow
-User registers or logs in → gets a JWT token from the server.
-
-Token is stored in localStorage.
-
-AuthContext reads token on app load and keeps the user logged in.
-
-Navbar updates dynamically based on isAuthenticated.
-
-On logout → token is removed → user is redirected to login.
+-User registers or logs in → gets a JWT token from the server.
+-Token is stored in localStorage.
+-AuthContext reads token on app load and keeps the user logged in.
+-Navbar updates dynamically based on isAuthenticated.
+-On logout → token is removed → user is redirected to login.
 ```
